@@ -1,0 +1,2 @@
+20230120	18:46:40	04cc855e-7d83-4467-938f-c2164e390a1d	Error: Not allowed by CORS
+20230120	18:47:11	9195e4a4-b918-4da8-832e-605ed25a8e8e	Error: Not allowed by CORS
