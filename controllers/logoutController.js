@@ -1,11 +1,4 @@
-const fsPromises = require("fs").promises;
-const path = require("path");
-const userDB = {
-  users: require("../model/users.json"),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
+const User = require("../model/User");
 
 const handleLogout = async (req, res) => {
   // Note: On client, also delete the accessToken
@@ -17,27 +10,23 @@ const handleLogout = async (req, res) => {
 
   const refreshToken = cookies.jwt;
 
-  // Check if refreshToken is in DB
-  const foundUser = userDB.users.find((u) => u.refreshToken === refreshToken);
+  try {
+    // Check if refreshToken is in DB
+    const foundUser = await User.findOne({ refreshToken: refreshToken }).exec();
 
-  if (!foundUser) {
-    res.clearCookie("jwt", { httpOnly: true });
-    return res.sendStatus(403);
+    if (!foundUser) {
+      res.clearCookie("jwt", { httpOnly: true });
+      return res.sendStatus(403);
+    }
+
+    foundUser.refreshToken = "";
+    await foundUser.save();
+
+    res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
+    res.sendStatus(204);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-
-  // Delete refreshToken in DB
-  const otherUsers = userDB.users.filter(
-    (u) => u.refreshToken !== foundUser.refreshToken
-  );
-  const currUser = { ...foundUser, refreshToken: "" };
-  userDB.setUsers([...otherUsers, currUser]);
-  await fsPromises.writeFile(
-    path.join(__dirname, "..", "model", "users.json"),
-    JSON.stringify(userDB.users)
-  );
-
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
-  res.sendStatus(204);
 };
 
 module.exports = { handleLogout };
