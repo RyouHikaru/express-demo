@@ -1,4 +1,4 @@
-# Express Demo
+# Learning Express
 
 This project is dedicated for learning backend development using NodeJS, Express, and MongoDB (Mongoose).
 
