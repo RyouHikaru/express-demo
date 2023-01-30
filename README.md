@@ -2,7 +2,7 @@
 
 This project is dedicated for learning backend development using NodeJS, Express, and MongoDB (Mongoose).
 
-## Concepts and topics included:
+## Concepts and topics demonstrated:
 
 NodeJS:
 * File handling
